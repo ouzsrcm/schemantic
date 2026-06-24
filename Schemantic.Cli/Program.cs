@@ -1,12 +1,14 @@
 ﻿using System.CommandLine;
 using System.Diagnostics;
 using Schemantic.Core.Abstractions;
+using Schemantic.Providers.Oracle;
 using Schemantic.Providers.SqlServer;
 using Schemantic.Renderers;
 
-var providers = new Dictionary<string, IDatabaseProvider>(StringComparer.OrdinalIgnoreCase)
+var providers = new Dictionary<string, Func<string?, IDatabaseProvider>>(StringComparer.OrdinalIgnoreCase)
 {
-    ["sqlserver"] = new SqlServerProvider(),
+    ["sqlserver"] = _ => new SqlServerProvider(),
+    ["oracle"] = schema => new OracleProvider(schema),
 };
 
 var renderers = new Dictionary<string, IRenderer>(StringComparer.OrdinalIgnoreCase)
@@ -40,10 +42,16 @@ var outputOption = new Option<string>("--output")
     DefaultValueFactory = _ => "schema.md",
 };
 
+var schemaOption = new Option<string?>("--schema")
+{
+    Description = "Oracle schema owner to read (optional; defaults to the connected user).",
+};
+
 rootCommand.Options.Add(providerOption);
 rootCommand.Options.Add(connectionOption);
 rootCommand.Options.Add(formatOption);
 rootCommand.Options.Add(outputOption);
+rootCommand.Options.Add(schemaOption);
 
 rootCommand.SetAction(async (parseResult, cancellationToken) =>
 {
@@ -51,17 +59,20 @@ rootCommand.SetAction(async (parseResult, cancellationToken) =>
     var connectionString = parseResult.GetValue(connectionOption)!;
     var formatName = parseResult.GetValue(formatOption)!;
     var outputPath = parseResult.GetValue(outputOption)!;
+    var schemaOwner = parseResult.GetValue(schemaOption);
 
     var stopwatch = Stopwatch.StartNew();
 
     try
     {
-        if (!providers.TryGetValue(providerName, out var provider))
+        if (!providers.TryGetValue(providerName, out var createProvider))
         {
             var available = string.Join(", ", providers.Keys);
             Console.Error.WriteLine($"Unknown provider '{providerName}'. Available providers: {available}.");
             return 1;
         }
+
+        var provider = createProvider(schemaOwner);
 
         if (!renderers.TryGetValue(formatName, out var renderer))
         {

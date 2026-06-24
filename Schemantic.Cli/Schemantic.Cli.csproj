@@ -4,6 +4,7 @@
     <ProjectReference Include="..\Schemantic.Core\Schemantic.Core.csproj" />
     <ProjectReference Include="..\Schemantic.Providers.SqlServer\Schemantic.Providers.SqlServer.csproj" />
     <ProjectReference Include="..\Schemantic.Renderers\Schemantic.Renderers.csproj" />
+    <ProjectReference Include="..\Schemantic.Providers.Oracle\Schemantic.Providers.Oracle.csproj" />
   </ItemGroup>
 
   <ItemGroup>
