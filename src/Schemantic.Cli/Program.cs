@@ -16,6 +16,7 @@ var providers = new Dictionary<string, Func<string?, IDatabaseProvider>>(StringC
 var renderers = new Dictionary<string, IRenderer>(StringComparer.OrdinalIgnoreCase)
 {
     ["markdown"] = new MarkdownRenderer(),
+    ["json"] = new JsonRenderer(),
 };
 
 var rootCommand = new RootCommand("Reads database schema metadata and writes documentation.");
@@ -38,10 +39,9 @@ var formatOption = new Option<string>("--format")
     DefaultValueFactory = _ => "markdown",
 };
 
-var outputOption = new Option<string>("--output")
+var outputOption = new Option<string?>("--output")
 {
-    Description = "Output file path.",
-    DefaultValueFactory = _ => "schema.md",
+    Description = "Output file path (default: schema.md or schema.json based on --format).",
 };
 
 var schemaOption = new Option<string?>("--schema")
@@ -60,7 +60,7 @@ rootCommand.SetAction(async (parseResult, cancellationToken) =>
     var providerName = parseResult.GetValue(providerOption)!;
     var connectionString = parseResult.GetValue(connectionOption)!;
     var formatName = parseResult.GetValue(formatOption)!;
-    var outputPath = parseResult.GetValue(outputOption)!;
+    var outputPath = parseResult.GetValue(outputOption) ?? GetDefaultOutputPath(formatName);
     var schemaOwner = parseResult.GetValue(schemaOption);
 
     var stopwatch = Stopwatch.StartNew();
@@ -105,3 +105,6 @@ rootCommand.SetAction(async (parseResult, cancellationToken) =>
 });
 
 return await rootCommand.Parse(args).InvokeAsync().ConfigureAwait(false);
+
+static string GetDefaultOutputPath(string formatName) =>
+    formatName.Equals("json", StringComparison.OrdinalIgnoreCase) ? "schema.json" : "schema.md";
