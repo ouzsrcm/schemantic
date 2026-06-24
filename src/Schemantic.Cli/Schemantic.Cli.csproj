@@ -17,6 +17,21 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>schemantic</ToolCommandName>
+    <PackageId>Schemantic</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Oğuz Sarıçam</Authors>
+    <Description>Multi-database schema documentation tool (SQL Server, Oracle, SQLite) with Markdown/JSON output.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/ouzsrcm/schemantic</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ouzsrcm/schemantic</RepositoryUrl>
+    <PackageTags>database;documentation;schema;sql-server;oracle;sqlite;cli</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
 </Project>

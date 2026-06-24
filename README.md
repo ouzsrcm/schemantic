@@ -23,6 +23,15 @@ A multi-database schema documentation tool, with planned support for local LLM-a
 
 **Requirements:** [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 
+### Install as a .NET tool
+
+```bash
+dotnet tool install -g Schemantic
+schemantic --provider sqlite --connection "Data Source=schema.db" --output schema.md
+```
+
+### Build from source
+
 ```bash
 git clone https://github.com/<owner>/schemantic.git
 cd schemantic
@@ -112,6 +121,15 @@ schemantic/
 | **v1.0** | Stable CLI, documented provider API |
 
 ## Contributing
+
+### Test the tool package locally
+
+From the repository root:
+
+```bash
+dotnet pack -c Release src/Schemantic.Cli/Schemantic.Cli.csproj
+dotnet tool install -g --add-source ./src/Schemantic.Cli/bin/Release Schemantic
+```
 
 To add a database provider:
 
