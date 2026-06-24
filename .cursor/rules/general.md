@@ -14,11 +14,12 @@ Mimari ilkeler — her zaman bunlara uy:
 - Kod İngilizce (identifier, comment). Açıklamaları bana Türkçe verebilirsin.
 
 Solution yapısı:
-- Schemantic.Core         -> SchemaModel + arayüzler (IDatabaseProvider, IRenderer)
-- Schemantic.Providers.SqlServer -> SQL Server provider
-- Schemantic.Renderers    -> Markdown (ileride HTML) renderer'ları
-- Schemantic.Cli          -> konsol uygulaması (giriş noktası)
-- Schemantic.Tests        -> xUnit testleri
+- src/Schemantic.Core         -> SchemaModel + arayüzler (IDatabaseProvider, IRenderer)
+- src/Schemantic.Providers.*  -> Veritabanı provider'ları (SqlServer, Oracle, Sqlite, ...)
+- src/Schemantic.Renderers    -> Markdown (ileride HTML) renderer'ları
+- src/Schemantic.Cli          -> konsol uygulaması (giriş noktası)
+- tests/Schemantic.Tests      -> xUnit testleri
+- samples/                    -> Örnek SQL ve veritabanı dosyaları
 
 Henüz olmayan şeyleri (Oracle, Access, LLM, HTML, config) ÜRETME. Sadece
 istenen adımı yap.

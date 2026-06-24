@@ -32,7 +32,7 @@ dotnet build
 Generate documentation from a SQL Server database:
 
 ```bash
-dotnet run --project Schemantic.Cli -- \
+dotnet run --project src/Schemantic.Cli -- \
   --connection "Server=localhost;Database=MyDb;Trusted_Connection=True;" \
   --output schema.md
 ```
@@ -73,13 +73,32 @@ flowchart LR
 
 **Solution layout**
 
+```
+schemantic/
+├── src/
+│   ├── Schemantic.Core/              Shared model and interfaces
+│   ├── Schemantic.Providers.SqlServer/
+│   ├── Schemantic.Providers.Oracle/
+│   ├── Schemantic.Providers.Sqlite/
+│   ├── Schemantic.Renderers/         Output renderers
+│   └── Schemantic.Cli/               Console entry point
+├── tests/
+│   └── Schemantic.Tests/             Unit tests
+├── samples/                          Sample SQL and databases
+├── Schemantic.sln
+├── Directory.Build.props
+└── global.json
+```
+
 | Project | Role |
 |---------|------|
-| `Schemantic.Core` | Shared model and interfaces |
-| `Schemantic.Providers.SqlServer` | SQL Server provider |
-| `Schemantic.Renderers` | Output renderers |
-| `Schemantic.Cli` | Console entry point |
-| `Schemantic.Tests` | Unit tests |
+| `src/Schemantic.Core` | Shared model and interfaces |
+| `src/Schemantic.Providers.SqlServer` | SQL Server provider |
+| `src/Schemantic.Providers.Oracle` | Oracle provider |
+| `src/Schemantic.Providers.Sqlite` | SQLite provider |
+| `src/Schemantic.Renderers` | Output renderers |
+| `src/Schemantic.Cli` | Console entry point |
+| `tests/Schemantic.Tests` | Unit tests |
 
 ## Roadmap
 
@@ -96,9 +115,9 @@ flowchart LR
 
 To add a database provider:
 
-1. Create a project (e.g. `Schemantic.Providers.Oracle`) referencing `Schemantic.Core`.
+1. Create a project under `src/` (e.g. `src/Schemantic.Providers.Oracle`) referencing `Schemantic.Core`.
 2. Implement `IDatabaseProvider` — read engine-specific metadata and populate `DatabaseSchema`.
-3. Register the provider in `Schemantic.Cli/Program.cs`.
+3. Register the provider in `src/Schemantic.Cli/Program.cs`.
 
 A detailed provider guide will be added later. Pull requests and issue reports are welcome.
 

@@ -3,17 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schemantic.Core", "Schemantic.Core\Schemantic.Core.csproj", "{A8F600A8-BFF3-408C-AED6-4D030BC5D9F8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E4B8F2A1-3C5D-4E7F-9A1B-2D3C4E5F6A7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schemantic.Providers.SqlServer", "Schemantic.Providers.SqlServer\Schemantic.Providers.SqlServer.csproj", "{0707156D-EB15-4A6A-B3A0-492007298ED8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B1A2C3D4-E5F6-7890-ABCD-EF1234567890}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schemantic.Renderers", "Schemantic.Renderers\Schemantic.Renderers.csproj", "{77C50760-5175-467E-9D23-39B9CA7F8754}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schemantic.Core", "src\Schemantic.Core\Schemantic.Core.csproj", "{A8F600A8-BFF3-408C-AED6-4D030BC5D9F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schemantic.Cli", "Schemantic.Cli\Schemantic.Cli.csproj", "{155FD286-9FC0-4EBC-80E2-A1279053A7BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schemantic.Providers.SqlServer", "src\Schemantic.Providers.SqlServer\Schemantic.Providers.SqlServer.csproj", "{0707156D-EB15-4A6A-B3A0-492007298ED8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schemantic.Tests", "Schemantic.Tests\Schemantic.Tests.csproj", "{31B91BE2-FC35-464E-852B-B653046AE1E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schemantic.Renderers", "src\Schemantic.Renderers\Schemantic.Renderers.csproj", "{77C50760-5175-467E-9D23-39B9CA7F8754}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schemantic.Providers.Oracle", "Schemantic.Providers.Oracle\Schemantic.Providers.Oracle.csproj", "{4BB31859-D314-421F-93F7-B347BCB7F151}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schemantic.Cli", "src\Schemantic.Cli\Schemantic.Cli.csproj", "{155FD286-9FC0-4EBC-80E2-A1279053A7BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schemantic.Tests", "tests\Schemantic.Tests\Schemantic.Tests.csproj", "{31B91BE2-FC35-464E-852B-B653046AE1E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schemantic.Providers.Oracle", "src\Schemantic.Providers.Oracle\Schemantic.Providers.Oracle.csproj", "{4BB31859-D314-421F-93F7-B347BCB7F151}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schemantic.Providers.Sqlite", "src\Schemantic.Providers.Sqlite\Schemantic.Providers.Sqlite.csproj", "{808C8333-834A-4934-A9A7-0631F4C6F5AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,8 +103,29 @@ Global
 		{4BB31859-D314-421F-93F7-B347BCB7F151}.Release|x64.Build.0 = Release|Any CPU
 		{4BB31859-D314-421F-93F7-B347BCB7F151}.Release|x86.ActiveCfg = Release|Any CPU
 		{4BB31859-D314-421F-93F7-B347BCB7F151}.Release|x86.Build.0 = Release|Any CPU
+		{808C8333-834A-4934-A9A7-0631F4C6F5AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{808C8333-834A-4934-A9A7-0631F4C6F5AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{808C8333-834A-4934-A9A7-0631F4C6F5AF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{808C8333-834A-4934-A9A7-0631F4C6F5AF}.Debug|x64.Build.0 = Debug|Any CPU
+		{808C8333-834A-4934-A9A7-0631F4C6F5AF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{808C8333-834A-4934-A9A7-0631F4C6F5AF}.Debug|x86.Build.0 = Debug|Any CPU
+		{808C8333-834A-4934-A9A7-0631F4C6F5AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{808C8333-834A-4934-A9A7-0631F4C6F5AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{808C8333-834A-4934-A9A7-0631F4C6F5AF}.Release|x64.ActiveCfg = Release|Any CPU
+		{808C8333-834A-4934-A9A7-0631F4C6F5AF}.Release|x64.Build.0 = Release|Any CPU
+		{808C8333-834A-4934-A9A7-0631F4C6F5AF}.Release|x86.ActiveCfg = Release|Any CPU
+		{808C8333-834A-4934-A9A7-0631F4C6F5AF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A8F600A8-BFF3-408C-AED6-4D030BC5D9F8} = {E4B8F2A1-3C5D-4E7F-9A1B-2D3C4E5F6A7B}
+		{0707156D-EB15-4A6A-B3A0-492007298ED8} = {E4B8F2A1-3C5D-4E7F-9A1B-2D3C4E5F6A7B}
+		{77C50760-5175-467E-9D23-39B9CA7F8754} = {E4B8F2A1-3C5D-4E7F-9A1B-2D3C4E5F6A7B}
+		{155FD286-9FC0-4EBC-80E2-A1279053A7BD} = {E4B8F2A1-3C5D-4E7F-9A1B-2D3C4E5F6A7B}
+		{4BB31859-D314-421F-93F7-B347BCB7F151} = {E4B8F2A1-3C5D-4E7F-9A1B-2D3C4E5F6A7B}
+		{808C8333-834A-4934-A9A7-0631F4C6F5AF} = {E4B8F2A1-3C5D-4E7F-9A1B-2D3C4E5F6A7B}
+		{31B91BE2-FC35-464E-852B-B653046AE1E4} = {B1A2C3D4-E5F6-7890-ABCD-EF1234567890}
 	EndGlobalSection
 EndGlobal

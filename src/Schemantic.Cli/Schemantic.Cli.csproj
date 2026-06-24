@@ -5,6 +5,7 @@
     <ProjectReference Include="..\Schemantic.Providers.SqlServer\Schemantic.Providers.SqlServer.csproj" />
     <ProjectReference Include="..\Schemantic.Renderers\Schemantic.Renderers.csproj" />
     <ProjectReference Include="..\Schemantic.Providers.Oracle\Schemantic.Providers.Oracle.csproj" />
+    <ProjectReference Include="..\Schemantic.Providers.Sqlite\Schemantic.Providers.Sqlite.csproj" />
   </ItemGroup>
 
   <ItemGroup>

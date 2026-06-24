@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Schemantic.Core.Abstractions;
 using Schemantic.Providers.Oracle;
+using Schemantic.Providers.Sqlite;
 using Schemantic.Providers.SqlServer;
 using Schemantic.Renderers;
 
@@ -9,6 +10,7 @@ var providers = new Dictionary<string, Func<string?, IDatabaseProvider>>(StringC
 {
     ["sqlserver"] = _ => new SqlServerProvider(),
     ["oracle"] = schema => new OracleProvider(schema),
+    ["sqlite"] = _ => new SqliteProvider(),
 };
 
 var renderers = new Dictionary<string, IRenderer>(StringComparer.OrdinalIgnoreCase)
