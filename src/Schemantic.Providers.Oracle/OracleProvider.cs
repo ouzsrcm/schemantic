@@ -66,6 +66,20 @@ public sealed class OracleProvider : IDatabaseProvider
                 .ThenBy(t => t.Name, StringComparer.Ordinal)
                 .ToList();
 
+            var views = await ReadViewsAsync(connection, owner, cancellationToken)
+                .ConfigureAwait(false);
+            await PopulateViewColumnsAsync(connection, owner, views, cancellationToken)
+                .ConfigureAwait(false);
+            await PopulateViewDescriptionsAsync(connection, owner, views, cancellationToken)
+                .ConfigureAwait(false);
+            await PopulateViewColumnDescriptionsAsync(connection, owner, views, cancellationToken)
+                .ConfigureAwait(false);
+
+            schema.Views = views.Values
+                .OrderBy(v => v.Schema, StringComparer.Ordinal)
+                .ThenBy(v => v.Name, StringComparer.Ordinal)
+                .ToList();
+
             return schema;
         }
         catch (OracleException ex)
@@ -337,6 +351,125 @@ public sealed class OracleProvider : IDatabaseProvider
 
             var columnName = reader.GetString(1);
             var column = table.Columns.FirstOrDefault(c => c.Name == columnName);
+
+            if (column is not null)
+            {
+                column.Description = reader.IsDBNull(2) ? null : reader.GetString(2);
+            }
+        }
+    }
+
+    private static async Task<Dictionary<TableKey, ViewInfo>> ReadViewsAsync(
+        OracleConnection connection,
+        string owner,
+        CancellationToken cancellationToken)
+    {
+        var views = new Dictionary<TableKey, ViewInfo>();
+
+        await using var command = CreateOwnerCommand(connection, owner, OracleSchemaQueries.Views);
+        command.InitialLONGFetchSize = -1;
+
+        await using var reader = await command
+            .ExecuteReaderAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+        {
+            var view = new ViewInfo
+            {
+                Schema = owner,
+                Name = reader.GetString(0),
+                Definition = reader.IsDBNull(1) ? null : reader.GetString(1),
+            };
+
+            views[new TableKey(view.Schema, view.Name)] = view;
+        }
+
+        return views;
+    }
+
+    private static async Task PopulateViewColumnsAsync(
+        OracleConnection connection,
+        string owner,
+        Dictionary<TableKey, ViewInfo> views,
+        CancellationToken cancellationToken)
+    {
+        await using var command = CreateOwnerCommand(connection, owner, OracleSchemaQueries.ViewColumns);
+
+        await using var reader = await command
+            .ExecuteReaderAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+        {
+            var key = new TableKey(owner, reader.GetString(0));
+            if (!views.TryGetValue(key, out var view))
+            {
+                continue;
+            }
+
+            var dataType = reader.GetString(2);
+            var dataLength = reader.IsDBNull(3) ? (int?)null : Convert.ToInt32(reader.GetValue(3));
+            var precision = reader.IsDBNull(4) ? (int?)null : Convert.ToInt32(reader.GetValue(4));
+            var scale = reader.IsDBNull(5) ? (int?)null : Convert.ToInt32(reader.GetValue(5));
+
+            view.Columns.Add(new ColumnInfo
+            {
+                Name = reader.GetString(1),
+                DataType = FormatDataType(dataType, precision, scale),
+                IsNullable = string.Equals(reader.GetString(6), "Y", StringComparison.Ordinal),
+                IsPrimaryKey = false,
+                MaxLength = NormalizeMaxLength(dataType, dataLength),
+            });
+        }
+    }
+
+    private static async Task PopulateViewDescriptionsAsync(
+        OracleConnection connection,
+        string owner,
+        Dictionary<TableKey, ViewInfo> views,
+        CancellationToken cancellationToken)
+    {
+        await using var command = CreateOwnerCommand(connection, owner, OracleSchemaQueries.ViewComments);
+
+        await using var reader = await command
+            .ExecuteReaderAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+        {
+            var key = new TableKey(owner, reader.GetString(0));
+            if (!views.TryGetValue(key, out var view))
+            {
+                continue;
+            }
+
+            view.Description = reader.IsDBNull(1) ? null : reader.GetString(1);
+        }
+    }
+
+    private static async Task PopulateViewColumnDescriptionsAsync(
+        OracleConnection connection,
+        string owner,
+        Dictionary<TableKey, ViewInfo> views,
+        CancellationToken cancellationToken)
+    {
+        await using var command = CreateOwnerCommand(connection, owner, OracleSchemaQueries.ColumnComments);
+
+        await using var reader = await command
+            .ExecuteReaderAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+        {
+            var key = new TableKey(owner, reader.GetString(0));
+            if (!views.TryGetValue(key, out var view))
+            {
+                continue;
+            }
+
+            var columnName = reader.GetString(1);
+            var column = view.Columns.FirstOrDefault(c => c.Name == columnName);
 
             if (column is not null)
             {

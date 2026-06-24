@@ -99,4 +99,34 @@ internal static class OracleSchemaQueries
             )
         ORDER BY i.TABLE_NAME, i.INDEX_NAME, ic.COLUMN_POSITION
         """;
+
+    internal const string Views = """
+        SELECT VIEW_NAME, TEXT
+        FROM ALL_VIEWS
+        WHERE OWNER = :owner
+        ORDER BY VIEW_NAME
+        """;
+
+    internal const string ViewColumns = """
+        SELECT
+            TABLE_NAME,
+            COLUMN_NAME,
+            DATA_TYPE,
+            DATA_LENGTH,
+            DATA_PRECISION,
+            DATA_SCALE,
+            NULLABLE,
+            COLUMN_ID
+        FROM ALL_TAB_COLUMNS
+        WHERE OWNER = :owner
+            AND TABLE_NAME IN (SELECT VIEW_NAME FROM ALL_VIEWS WHERE OWNER = :owner)
+        ORDER BY TABLE_NAME, COLUMN_ID
+        """;
+
+    internal const string ViewComments = """
+        SELECT TABLE_NAME, COMMENTS
+        FROM ALL_TAB_COMMENTS
+        WHERE OWNER = :owner
+            AND TABLE_TYPE = 'VIEW'
+        """;
 }

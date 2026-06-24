@@ -14,6 +14,17 @@ public class SchemaModelTests
 
         Assert.NotNull(schema.Tables);
         Assert.Empty(schema.Tables);
+        Assert.NotNull(schema.Views);
+        Assert.Empty(schema.Views);
+    }
+
+    [Fact]
+    public void ViewInfo_Columns_is_initialized_as_empty_list()
+    {
+        var view = new ViewInfo();
+
+        Assert.NotNull(view.Columns);
+        Assert.Empty(view.Columns);
     }
 
     [Fact]

@@ -131,4 +131,66 @@ internal static class SqlServerSchemaQueries
         WHERE ep.name = @PropertyName
             AND {UserTableFilter};
         """;
+
+    /// <summary>Shared filter: user views only, excluding system schemas.</summary>
+    private const string UserViewFilter = """
+        v.is_ms_shipped = 0
+        AND s.name NOT IN (N'sys', N'INFORMATION_SCHEMA', N'guest')
+        """;
+
+    internal static readonly string Views = $"""
+        SELECT
+            s.name AS SchemaName,
+            v.name AS ViewName,
+            m.definition AS Definition
+        FROM sys.views AS v
+        INNER JOIN sys.schemas AS s ON v.schema_id = s.schema_id
+        LEFT JOIN sys.sql_modules AS m ON v.object_id = m.object_id
+        WHERE {UserViewFilter}
+        ORDER BY s.name, v.name;
+        """;
+
+    internal static readonly string ViewColumns = $"""
+        SELECT
+            s.name AS SchemaName,
+            v.name AS ViewName,
+            c.name AS ColumnName,
+            ty.name AS DataType,
+            c.is_nullable AS IsNullable,
+            c.max_length AS MaxLength
+        FROM sys.columns AS c
+        INNER JOIN sys.views AS v ON c.object_id = v.object_id
+        INNER JOIN sys.schemas AS s ON v.schema_id = s.schema_id
+        INNER JOIN sys.types AS ty ON c.user_type_id = ty.user_type_id
+        WHERE {UserViewFilter}
+        ORDER BY s.name, v.name, c.column_id;
+        """;
+
+    internal static readonly string ViewDescriptions = $"""
+        SELECT
+            s.name AS SchemaName,
+            v.name AS ViewName,
+            CAST(ep.value AS NVARCHAR(MAX)) AS Description
+        FROM sys.extended_properties AS ep
+        INNER JOIN sys.views AS v ON ep.major_id = v.object_id
+        INNER JOIN sys.schemas AS s ON v.schema_id = s.schema_id
+        WHERE ep.name = @PropertyName
+            AND ep.minor_id = 0
+            AND {UserViewFilter};
+        """;
+
+    internal static readonly string ViewColumnDescriptions = $"""
+        SELECT
+            s.name AS SchemaName,
+            v.name AS ViewName,
+            c.name AS ColumnName,
+            CAST(ep.value AS NVARCHAR(MAX)) AS Description
+        FROM sys.extended_properties AS ep
+        INNER JOIN sys.views AS v ON ep.major_id = v.object_id
+        INNER JOIN sys.schemas AS s ON v.schema_id = s.schema_id
+        INNER JOIN sys.columns AS c
+            ON ep.major_id = c.object_id AND ep.minor_id = c.column_id
+        WHERE ep.name = @PropertyName
+            AND {UserViewFilter};
+        """;
 }

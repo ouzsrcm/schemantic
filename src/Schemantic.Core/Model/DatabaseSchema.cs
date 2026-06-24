@@ -10,4 +10,7 @@ public class DatabaseSchema
 
     /// <summary>Tables discovered in the database.</summary>
     public IList<TableInfo> Tables { get; set; } = new List<TableInfo>();
+
+    /// <summary>Views discovered in the database.</summary>
+    public IList<ViewInfo> Views { get; set; } = new List<ViewInfo>();
 }

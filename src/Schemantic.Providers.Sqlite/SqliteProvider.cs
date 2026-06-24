@@ -49,6 +49,20 @@ public sealed class SqliteProvider : IDatabaseProvider
                 .ThenBy(t => t.Name, StringComparer.OrdinalIgnoreCase)
                 .ToList();
 
+            var views = await ReadViewsAsync(connection, cancellationToken)
+                .ConfigureAwait(false);
+
+            foreach (var view in views.Values.OrderBy(v => v.Name, StringComparer.OrdinalIgnoreCase))
+            {
+                await PopulateViewColumnsAsync(connection, view, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+
+            schema.Views = views.Values
+                .OrderBy(v => v.Schema, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(v => v.Name, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
             return schema;
         }
         catch (SqliteException ex)
@@ -86,6 +100,63 @@ public sealed class SqliteProvider : IDatabaseProvider
         }
 
         return tables;
+    }
+
+    private static async Task<Dictionary<string, ViewInfo>> ReadViewsAsync(
+        SqliteConnection connection,
+        CancellationToken cancellationToken)
+    {
+        const string sql =
+            "SELECT name, sql FROM sqlite_master WHERE type='view' AND name NOT LIKE 'sqlite_%' ORDER BY name";
+
+        var views = new Dictionary<string, ViewInfo>(StringComparer.OrdinalIgnoreCase);
+
+        await using var command = connection.CreateCommand();
+        command.CommandText = sql;
+
+        await using var reader = await command
+            .ExecuteReaderAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+        {
+            var name = reader.GetString(0);
+            views[name] = new ViewInfo
+            {
+                Schema = MainSchema,
+                Name = name,
+                Definition = reader.IsDBNull(1) ? null : reader.GetString(1),
+            };
+        }
+
+        return views;
+    }
+
+    private static async Task PopulateViewColumnsAsync(
+        SqliteConnection connection,
+        ViewInfo view,
+        CancellationToken cancellationToken)
+    {
+        await using var command = connection.CreateCommand();
+        command.CommandText = $"PRAGMA table_info({QuoteIdentifier(view.Name)})";
+
+        await using var reader = await command
+            .ExecuteReaderAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+        {
+            var type = reader.IsDBNull(2) ? string.Empty : reader.GetString(2);
+            var notNull = reader.GetInt32(3);
+
+            view.Columns.Add(new ColumnInfo
+            {
+                Name = reader.GetString(1),
+                DataType = type,
+                IsNullable = notNull == 0,
+                IsPrimaryKey = false,
+            });
+        }
     }
 
     private static async Task PopulateColumnsAsync(

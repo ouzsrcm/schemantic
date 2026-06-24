@@ -52,6 +52,20 @@ public sealed class SqlServerProvider : IDatabaseProvider
                 .ThenBy(t => t.Name, StringComparer.OrdinalIgnoreCase)
                 .ToList();
 
+            var views = await ReadViewsAsync(connection, cancellationToken)
+                .ConfigureAwait(false);
+            await PopulateViewColumnsAsync(connection, views, cancellationToken)
+                .ConfigureAwait(false);
+            await PopulateViewDescriptionsAsync(connection, views, cancellationToken)
+                .ConfigureAwait(false);
+            await PopulateViewColumnDescriptionsAsync(connection, views, cancellationToken)
+                .ConfigureAwait(false);
+
+            schema.Views = views.Values
+                .OrderBy(v => v.Schema, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(v => v.Name, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
             return schema;
         }
         catch (SqlException ex)
@@ -297,6 +311,123 @@ public sealed class SqlServerProvider : IDatabaseProvider
 
             var columnName = reader.GetString(2);
             var column = table.Columns.FirstOrDefault(
+                c => string.Equals(c.Name, columnName, StringComparison.OrdinalIgnoreCase));
+
+            if (column is not null)
+            {
+                column.Description = reader.IsDBNull(3) ? null : reader.GetString(3);
+            }
+        }
+    }
+
+    private static async Task<Dictionary<TableKey, ViewInfo>> ReadViewsAsync(
+        SqlConnection connection,
+        CancellationToken cancellationToken)
+    {
+        var views = new Dictionary<TableKey, ViewInfo>();
+
+        await using var command = connection.CreateCommand();
+        command.CommandText = SqlServerSchemaQueries.Views;
+
+        await using var reader = await command
+            .ExecuteReaderAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+        {
+            var view = new ViewInfo
+            {
+                Schema = reader.GetString(0),
+                Name = reader.GetString(1),
+                Definition = reader.IsDBNull(2) ? null : reader.GetString(2),
+            };
+
+            views[new TableKey(view.Schema, view.Name)] = view;
+        }
+
+        return views;
+    }
+
+    private static async Task PopulateViewColumnsAsync(
+        SqlConnection connection,
+        Dictionary<TableKey, ViewInfo> views,
+        CancellationToken cancellationToken)
+    {
+        await using var command = connection.CreateCommand();
+        command.CommandText = SqlServerSchemaQueries.ViewColumns;
+
+        await using var reader = await command
+            .ExecuteReaderAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+        {
+            var key = new TableKey(reader.GetString(0), reader.GetString(1));
+            if (!views.TryGetValue(key, out var view))
+            {
+                continue;
+            }
+
+            var dataType = reader.GetString(3);
+            view.Columns.Add(new ColumnInfo
+            {
+                Name = reader.GetString(2),
+                DataType = dataType,
+                IsNullable = reader.GetBoolean(4),
+                IsPrimaryKey = false,
+                MaxLength = NormalizeMaxLength(dataType, reader.GetInt16(5)),
+            });
+        }
+    }
+
+    private static async Task PopulateViewDescriptionsAsync(
+        SqlConnection connection,
+        Dictionary<TableKey, ViewInfo> views,
+        CancellationToken cancellationToken)
+    {
+        await using var command = connection.CreateCommand();
+        command.CommandText = SqlServerSchemaQueries.ViewDescriptions;
+        command.Parameters.Add(new SqlParameter("@PropertyName", MsDescriptionProperty));
+
+        await using var reader = await command
+            .ExecuteReaderAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+        {
+            var key = new TableKey(reader.GetString(0), reader.GetString(1));
+            if (!views.TryGetValue(key, out var view))
+            {
+                continue;
+            }
+
+            view.Description = reader.IsDBNull(2) ? null : reader.GetString(2);
+        }
+    }
+
+    private static async Task PopulateViewColumnDescriptionsAsync(
+        SqlConnection connection,
+        Dictionary<TableKey, ViewInfo> views,
+        CancellationToken cancellationToken)
+    {
+        await using var command = connection.CreateCommand();
+        command.CommandText = SqlServerSchemaQueries.ViewColumnDescriptions;
+        command.Parameters.Add(new SqlParameter("@PropertyName", MsDescriptionProperty));
+
+        await using var reader = await command
+            .ExecuteReaderAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+        {
+            var key = new TableKey(reader.GetString(0), reader.GetString(1));
+            if (!views.TryGetValue(key, out var view))
+            {
+                continue;
+            }
+
+            var columnName = reader.GetString(2);
+            var column = view.Columns.FirstOrDefault(
                 c => string.Equals(c.Name, columnName, StringComparison.OrdinalIgnoreCase));
 
             if (column is not null)
