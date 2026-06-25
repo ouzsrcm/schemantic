@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Schemantic.Core\Schemantic.Core.csproj" />
+    <ProjectReference Include="..\Schemantic.Providers.SqlServer\Schemantic.Providers.SqlServer.csproj" />
+    <ProjectReference Include="..\Schemantic.Providers.Oracle\Schemantic.Providers.Oracle.csproj" />
+    <ProjectReference Include="..\Schemantic.Providers.Sqlite\Schemantic.Providers.Sqlite.csproj" />
+  </ItemGroup>
+
+</Project>

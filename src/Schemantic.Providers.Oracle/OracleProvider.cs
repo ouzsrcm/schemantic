@@ -1,3 +1,4 @@
+using System.Data.Common;
 using Oracle.ManagedDataAccess.Client;
 using Schemantic.Core.Abstractions;
 using Schemantic.Core.Model;
@@ -25,6 +26,10 @@ public sealed class OracleProvider : IDatabaseProvider
 
     /// <inheritdoc />
     public string Name => "Oracle";
+
+    /// <inheritdoc />
+    public DbConnection CreateConnection(string connectionString) =>
+        throw new NotImplementedException("CreateConnection for Oracle will be added in a future release.");
 
     /// <inheritdoc />
     public async Task<DatabaseSchema> ReadSchemaAsync(

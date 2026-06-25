@@ -1,3 +1,4 @@
+using System.Data.Common;
 using Microsoft.Data.SqlClient;
 using Schemantic.Core.Abstractions;
 using Schemantic.Core.Model;
@@ -13,6 +14,10 @@ public sealed class SqlServerProvider : IDatabaseProvider
 
     /// <inheritdoc />
     public string Name => "SqlServer";
+
+    /// <inheritdoc />
+    public DbConnection CreateConnection(string connectionString) =>
+        throw new NotImplementedException("CreateConnection for SQL Server will be added in a future release.");
 
     /// <inheritdoc />
     public async Task<DatabaseSchema> ReadSchemaAsync(

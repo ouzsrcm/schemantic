@@ -1,3 +1,4 @@
+using System.Data.Common;
 using Microsoft.Data.Sqlite;
 using Schemantic.Core.Abstractions;
 using Schemantic.Core.Model;
@@ -13,6 +14,13 @@ public sealed class SqliteProvider : IDatabaseProvider
 
     /// <inheritdoc />
     public string Name => "Sqlite";
+
+    /// <inheritdoc />
+    public DbConnection CreateConnection(string connectionString)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(connectionString);
+        return new SqliteConnection(connectionString);
+    }
 
     /// <inheritdoc />
     public async Task<DatabaseSchema> ReadSchemaAsync(

@@ -1,3 +1,4 @@
+using System.Data.Common;
 using Schemantic.Core.Model;
 
 namespace Schemantic.Core.Abstractions;
@@ -21,4 +22,11 @@ public interface IDatabaseProvider
     Task<DatabaseSchema> ReadSchemaAsync(
         string connectionString,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Creates a new ADO.NET connection for executing data queries. The caller owns disposal.
+    /// </summary>
+    /// <param name="connectionString">Connection string for the target database.</param>
+    /// <returns>An openable <see cref="DbConnection"/> for this provider's engine.</returns>
+    DbConnection CreateConnection(string connectionString);
 }
