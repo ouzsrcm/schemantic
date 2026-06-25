@@ -13,6 +13,7 @@ dizindeki [`CLAUDE.md`](../CLAUDE.md)'dir.
 | [`interpreters.md`](interpreters.md)  | Opsiyonel LLM yorumlama katmanı (Ollama / OpenAI-uyumlu). |
 | [`testing.md`](testing.md)            | Test yapısı, çalıştırma, yeni test yazma. |
 | [`contributing.md`](contributing.md)  | Geliştirme ortamı, kod kuralları, yol haritası. |
+| [`releasing.md`](releasing.md)        | NuGet yayın süreci, sürümleme, kontrol listesi. |
 
 > Not: Bu klasör Claude/AI asistanları içindir ama insan geliştiriciler için de
 > okunabilir tutulmuştur. Kök `README.md` son kullanıcıya, bu klasör katkı

@@ -19,15 +19,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackAsTool>true</PackAsTool>
+    <IsPackable>true</IsPackable>
     <ToolCommandName>schemantic</ToolCommandName>
     <PackageId>Schemantic</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.5.0</Version>
     <Authors>Oğuz Sarıçam</Authors>
-    <Description>Multi-database schema documentation tool (SQL Server, Oracle, SQLite) with Markdown/JSON output.</Description>
+    <Description>Multi-database schema documentation tool (SQL Server, Oracle, SQLite). Outputs Markdown, JSON, or HTML (with a Mermaid ER diagram); optional include/exclude filtering and opt-in LLM table summaries (Ollama / OpenAI-compatible).</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ouzsrcm/schemantic</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ouzsrcm/schemantic</RepositoryUrl>
-    <PackageTags>database;documentation;schema;sql-server;oracle;sqlite;cli</PackageTags>
+    <PackageTags>database;documentation;schema;sql-server;oracle;sqlite;markdown;html;mermaid;llm;cli</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 

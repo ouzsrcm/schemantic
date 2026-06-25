@@ -6,5 +6,7 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <!-- Only the CLI is published to NuGet; libraries opt back in via IsPackable=true. -->
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 </Project>

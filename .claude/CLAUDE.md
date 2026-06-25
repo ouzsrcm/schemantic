@@ -102,6 +102,7 @@ eklendiğinde buraya da kaydedilmelidir.
 - [`docs/interpreters.md`](docs/interpreters.md) — Opsiyonel LLM yorumlama katmanı.
 - [`docs/testing.md`](docs/testing.md) — Test yapısı ve yeni test yazma.
 - [`docs/contributing.md`](docs/contributing.md) — Katkı akışı ve kurallar.
+- [`docs/releasing.md`](docs/releasing.md) — NuGet yayın süreci ve sürümleme.
 
 ## Hızlı kurallar özeti (yaparken kontrol et)
 
