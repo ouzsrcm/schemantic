@@ -17,6 +17,7 @@ var renderers = new Dictionary<string, IRenderer>(StringComparer.OrdinalIgnoreCa
 {
     ["markdown"] = new MarkdownRenderer(),
     ["json"] = new JsonRenderer(),
+    ["html"] = new HtmlRenderer(),
 };
 
 var rootCommand = new RootCommand("Reads database schema metadata and writes documentation.");
@@ -106,5 +107,9 @@ rootCommand.SetAction(async (parseResult, cancellationToken) =>
 
 return await rootCommand.Parse(args).InvokeAsync().ConfigureAwait(false);
 
-static string GetDefaultOutputPath(string formatName) =>
-    formatName.Equals("json", StringComparison.OrdinalIgnoreCase) ? "schema.json" : "schema.md";
+static string GetDefaultOutputPath(string formatName) => formatName.ToLowerInvariant() switch
+{
+    "json" => "schema.json",
+    "html" => "schema.html",
+    _ => "schema.md",
+};

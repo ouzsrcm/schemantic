@@ -29,8 +29,8 @@ schemantic --provider sqlserver \
 |----------------|---------|-----------------------------|----------|
 | `--connection` | Evet    | —                           | Hedef veritabanı connection string'i. |
 | `--provider`   | Hayır   | `sqlserver`                 | `sqlserver` \| `oracle` \| `sqlite`. |
-| `--format`     | Hayır   | `markdown`                  | `markdown` \| `json`. |
-| `--output`     | Hayır   | `schema.md` veya `schema.json` | Çıktı dosyası yolu. Verilmezse formata göre seçilir. |
+| `--format`     | Hayır   | `markdown`                  | `markdown` \| `json` \| `html`. |
+| `--output`     | Hayır   | formata göre (`schema.md`/`schema.json`/`schema.html`) | Çıktı dosyası yolu. Verilmezse formata göre seçilir. |
 | `--schema`     | Hayır   | bağlı kullanıcı             | Yalnızca Oracle: okunacak şema sahibi (owner). |
 
 Bilinmeyen bir `--provider` veya `--format` verilirse, mevcut seçenekleri
@@ -74,6 +74,17 @@ için bir bölüm:
 
 `DatabaseSchema`'yı girintili (indented), **camelCase** anahtarlarla serileştirir.
 Programatik tüketim veya başka araçlara besleme için uygundur.
+
+### HTML (`HtmlRenderer`)
+
+Tek dosyalık, kendine yeten (self-contained) bir HTML belgesi üretir:
+
+- Üstte veritabanı adı, üretim zaman damgası ve tablo/görünüm sayıları.
+- Sol tarafta **arama kutusu** ve gezinme listesi (tablo/görünüm adına göre canlı filtre).
+- Foreign key ilişkilerinden üretilen bir **Mermaid ER diyagramı** (`erDiagram`), Mermaid CDN ile çizilir.
+- Her tablo için kolon tablosu, foreign key ve index alt bölümleri; görünümler için tanım `<details>` içinde.
+
+Tüm dinamik metin HTML-escape edilir; çıktı deterministiktir (şema+ad sıralı).
 
 ## Yeni bir format eklemek
 

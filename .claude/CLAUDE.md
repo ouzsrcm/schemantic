@@ -10,8 +10,8 @@
 dokümantasyon üreten bir **.NET 8 CLI aracıdır**. İleride opsiyonel olarak
 local LLM ile şema yorumlama hedeflenir.
 
-- **Mevcut:** SQL Server, Oracle, SQLite provider'ları; Markdown ve JSON çıktı.
-- **Planlanan:** Microsoft Access provider'ı, HTML + ER diyagram çıktısı, local LLM yorumları.
+- **Mevcut:** SQL Server, Oracle, SQLite provider'ları; Markdown, JSON ve HTML (Mermaid ER diyagramlı) çıktı.
+- **Planlanan:** Microsoft Access provider'ı, local LLM yorumları.
 
 NuGet aracı olarak paketlenir (`PackAsTool`), komut adı: **`schemantic`**.
 
@@ -38,7 +38,7 @@ schemantic/
 │   ├── Schemantic.Providers.SqlServer/  # SQL Server provider'ı
 │   ├── Schemantic.Providers.Oracle/     # Oracle provider'ı
 │   ├── Schemantic.Providers.Sqlite/     # SQLite provider'ı
-│   ├── Schemantic.Renderers/            # Markdown + JSON renderer'ları
+│   ├── Schemantic.Renderers/            # Markdown + JSON + HTML renderer'ları
 │   └── Schemantic.Cli/                  # Konsol uygulaması (giriş noktası)
 ├── tests/
 │   └── Schemantic.Tests/                # xUnit testleri
@@ -78,8 +78,8 @@ dotnet tool install -g --add-source ./src/Schemantic.Cli/bin/Release Schemantic
 |----------------|---------|-----------------------------|----------|
 | `--connection` | Evet    | —                           | Hedef veritabanı connection string'i |
 | `--provider`   | Hayır   | `sqlserver`                 | `sqlserver` \| `oracle` \| `sqlite` |
-| `--format`     | Hayır   | `markdown`                  | `markdown` \| `json` |
-| `--output`     | Hayır   | `schema.md` / `schema.json` | Çıktı dosyası yolu |
+| `--format`     | Hayır   | `markdown`                  | `markdown` \| `json` \| `html` |
+| `--output`     | Hayır   | formata göre (`schema.md`/`.json`/`.html`) | Çıktı dosyası yolu |
 | `--schema`     | Hayır   | bağlı kullanıcı             | Sadece Oracle: okunacak şema sahibi |
 
 Provider ve renderer kayıtları `src/Schemantic.Cli/Program.cs` içindeki iki

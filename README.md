@@ -10,13 +10,12 @@ A multi-database schema documentation tool, with planned support for local LLM-a
 **Current**
 
 - SQL Server metadata extraction
-- Markdown output (tables, columns, foreign keys, indexes)
+- Markdown, JSON, and HTML output (tables, columns, foreign keys, indexes)
+- HTML output with a Mermaid ER diagram, search, and navigation
 
 **Planned**
 
-- Oracle provider
 - Microsoft Access provider
-- HTML output with ER diagrams
 - Optional local LLM commentary on schema structure
 
 ## Quick start
@@ -51,7 +50,7 @@ Optional flags:
 | Flag | Default | Description |
 |------|---------|-------------|
 | `--provider` | `sqlserver` | Database provider |
-| `--format` | `markdown` | Output format |
+| `--format` | `markdown` | Output format (`markdown` \| `json` \| `html`) |
 | `--output` | `schema.md` | Output file path |
 
 ## Architecture
