@@ -1,6 +1,6 @@
 # Schemantic
 
-A multi-database schema documentation tool, with planned support for local LLM-assisted interpretation.
+A multi-database schema documentation tool (SQL Server, Oracle, SQLite) — outputs Markdown, JSON, or HTML (with a Mermaid ER diagram), with optional LLM table summaries and a preview runtime REST API.
 
 [![build](https://img.shields.io/badge/build-placeholder-lightgrey)](#)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -9,8 +9,8 @@ A multi-database schema documentation tool, with planned support for local LLM-a
 
 **Current**
 
-- SQL Server metadata extraction
-- Markdown, JSON, and HTML output (tables, columns, foreign keys, indexes)
+- SQL Server, Oracle, and SQLite metadata extraction (tables, columns, foreign keys, indexes, views)
+- Markdown, JSON, and HTML output
 - HTML output with a Mermaid ER diagram, search, and navigation
 - Optional LLM table summaries (Ollama / OpenAI-compatible) — skeleton
 - Config file with include/exclude schema and table filters (wildcards)
@@ -19,7 +19,8 @@ A multi-database schema documentation tool, with planned support for local LLM-a
 **Planned**
 
 - Microsoft Access provider
-- Column- and view-level LLM commentary; configuration file
+- Column- and view-level LLM commentary; output themes
+- API milestones: relationship `expand`, CRUD, GraphQL (see `Schemantic.Api`)
 
 ## Quick start
 
@@ -137,9 +138,11 @@ GET /api/main/author/1
 Schemantic separates database-specific logic from rendering through two abstractions:
 
 - **`IDatabaseProvider`** — connects to a database engine, reads metadata, and maps it to a shared `DatabaseSchema` model.
-- **`IRenderer`** — converts `DatabaseSchema` into a target format (Markdown today; HTML later).
+- **`IRenderer`** — converts `DatabaseSchema` into a target format (Markdown, JSON, or HTML).
+- **`IInterpreter`** *(optional)* — enriches the schema with LLM-generated table summaries.
+- **`ISqlDialect`** — builds parameterized data-query SQL per engine; used by `Schemantic.Api`.
 
-The CLI wires a provider and renderer together. Adding a new database means implementing `IDatabaseProvider` in a new project; core, renderers, and CLI stay unchanged.
+The CLI wires a provider and renderer together. Adding a new database means implementing `IDatabaseProvider` (and, for the API, `ISqlDialect`) in a new project; core, renderers, and CLI stay unchanged.
 
 ```mermaid
 flowchart LR
@@ -191,14 +194,13 @@ schemantic/
 
 ## Roadmap
 
-| Version | Scope |
-|---------|-------|
-| **MVP** | SQL Server → Markdown |
-| **v0.2** | Oracle provider |
-| **v0.3** | Access provider |
-| **v0.4** | HTML output + ER diagrams |
-| **v0.5** | Local LLM schema commentary |
-| **v1.0** | Stable CLI, documented provider API |
+| Version | Scope | Status |
+|---------|-------|--------|
+| **MVP–v0.4** | SQL Server / Oracle / SQLite providers; Markdown, JSON, HTML + Mermaid ER; views | Done |
+| **v0.5** | Optional LLM table commentary; include/exclude config filter; first NuGet release | Done |
+| **API v0.6** | `Schemantic.Api`: runtime read-only REST + Swagger (SQLite) | In progress |
+| **API v0.7–v0.9** | Relationship `expand`, CRUD, GraphQL | Planned |
+| **API v1.0** | Auth, Postman export, hardening | Planned |
 
 ## Contributing
 
