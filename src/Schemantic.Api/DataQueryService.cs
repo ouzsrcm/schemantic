@@ -15,6 +15,11 @@ public sealed class DataQueryService
     public DataQueryService(ApiBootstrap.RuntimeContext context) => _context = context;
 
     /// <summary>Runs a paginated list query for the given table.</summary>
+    /// <param name="table">Whitelisted table metadata.</param>
+    /// <param name="page">One-based page number.</param>
+    /// <param name="pageSize">Maximum rows per page.</param>
+    /// <param name="cancellationToken">Token used to cancel the query.</param>
+    /// <returns>Rows as column-name dictionaries.</returns>
     public async Task<IReadOnlyList<Dictionary<string, object?>>> QueryListAsync(
         TableInfo table,
         int page,
@@ -26,6 +31,10 @@ public sealed class DataQueryService
     }
 
     /// <summary>Runs a by-primary-key query; returns null when no row matches.</summary>
+    /// <param name="table">Whitelisted table metadata.</param>
+    /// <param name="id">Primary-key value from the route.</param>
+    /// <param name="cancellationToken">Token used to cancel the query.</param>
+    /// <returns>The matching row, or <c>null</c> when not found.</returns>
     public async Task<Dictionary<string, object?>?> QueryByIdAsync(
         TableInfo table,
         string id,

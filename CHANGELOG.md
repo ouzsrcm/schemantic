@@ -6,7 +6,11 @@ Bu projedeki önemli değişiklikler burada tutulur. Format
 
 ## [Unreleased]
 
-- (sonraki değişiklikler buraya)
+### Added
+
+- **Schemantic.Api** — şemadan runtime read-only REST API + OpenAPI/Swagger UI (SQLite).
+- **ISqlDialect** soyutlaması (parametreli SELECT, identifier quoting, sayfalama).
+- **IDatabaseProvider.CreateConnection** — API'nin somut sürücüye bağlanmadan veri sorgusu çalıştırması.
 
 ## [0.5.0] - 2026-06-25
 

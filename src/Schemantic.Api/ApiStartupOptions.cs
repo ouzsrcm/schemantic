@@ -30,6 +30,9 @@ public sealed class ApiStartupOptions
     /// Parses options from <paramref name="args"/> and <paramref name="configuration"/>.
     /// CLI flags override configuration keys under <c>Schemantic:</c>.
     /// </summary>
+    /// <param name="configuration">Application configuration (e.g. appsettings).</param>
+    /// <param name="args">Command-line arguments (<c>--provider</c>, <c>--connection</c>, etc.).</param>
+    /// <returns>Resolved startup options.</returns>
     public static ApiStartupOptions From(IConfiguration configuration, string[] args)
     {
         var map = ParseArgs(args);

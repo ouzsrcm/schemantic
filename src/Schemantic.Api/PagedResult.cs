@@ -3,6 +3,7 @@ namespace Schemantic.Api;
 /// <summary>
 /// Paginated list response envelope.
 /// </summary>
+/// <typeparam name="T">Element type of each row in <see cref="Items"/>.</typeparam>
 public sealed class PagedResult<T>
 {
     /// <summary>One-based page number.</summary>

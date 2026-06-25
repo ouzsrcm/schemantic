@@ -485,4 +485,4 @@ $RECYCLE.BIN/
 
 # Schemantic CLI generated output
 schema.md
-schema.db
+*.db

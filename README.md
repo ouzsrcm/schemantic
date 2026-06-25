@@ -14,6 +14,7 @@ A multi-database schema documentation tool, with planned support for local LLM-a
 - HTML output with a Mermaid ER diagram, search, and navigation
 - Optional LLM table summaries (Ollama / OpenAI-compatible) — skeleton
 - Config file with include/exclude schema and table filters (wildcards)
+- **REST API (preview)** — runtime read-only REST + Swagger UI from database schema (`Schemantic.Api`; SQLite only today)
 
 **Planned**
 
@@ -55,6 +56,82 @@ Optional flags:
 | `--format` | `markdown` | Output format (`markdown` \| `json` \| `html`) |
 | `--output` | `schema.md` | Output file path |
 
+## REST API (preview)
+
+**Schemantic.Api** connects to a database, introspects its schema at startup, and exposes a **read-only REST API** with a **Swagger UI**. Endpoints are generated at runtime from `DatabaseSchema` — there is no code generation.
+
+**Status:** preview (v0.6). Data queries work end-to-end with **SQLite** only. Relationship expand (`?expand=`), advanced filters, CRUD, GraphQL, and auth are planned for later milestones.
+
+### Run the API
+
+From the repository root, create a sample SQLite database (once):
+
+```bash
+sqlite3 sample.db < samples/seed-sqlite.sql
+```
+
+Configure the provider and connection string in `src/Schemantic.Api/appsettings.json` (or `appsettings.Development.json`):
+
+```json
+{
+  "Schemantic": {
+    "Provider": "sqlite",
+    "Connection": "Data Source=../../sample.db"
+  }
+}
+```
+
+Paths in `Data Source=...` are resolved relative to the process working directory (typically `src/Schemantic.Api` when using `dotnet run --project`). Prefer an absolute path if unsure.
+
+Start the host:
+
+```bash
+dotnet run --project src/Schemantic.Api
+```
+
+CLI flags override appsettings (`--provider`, `--connection`, optional `--config`, `--schema` for Oracle):
+
+```bash
+dotnet run --project src/Schemantic.Api -- \
+  --provider sqlite \
+  --connection "Data Source=C:/path/to/sample.db"
+```
+
+**Swagger UI:** [http://localhost:5015/swagger](http://localhost:5015/swagger) (default `http` launch profile). OpenAPI document: `/openapi.json`.
+
+### Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/schema` | Introspected `DatabaseSchema` (JSON) |
+| `GET` | `/api/{schema}/{table}` | Paginated rows (`?page`, `?pageSize`; default page size 50, max 1000) |
+| `GET` | `/api/{schema}/{table}/{id}` | Single row by primary key |
+
+**Example** (using `samples/seed-sqlite.sql` data; SQLite schema name is `main`):
+
+```http
+GET /api/main/author?page=1&pageSize=10
+```
+
+```json
+{
+  "page": 1,
+  "pageSize": 10,
+  "items": [
+    { "id": 1, "full_name": "Ahmet Yılmaz", "email": "ahmet@example.com", "bio": "Tarih yazarı" },
+    { "id": 2, "full_name": "Zeynep Kaya", "email": null, "bio": null }
+  ]
+}
+```
+
+```http
+GET /api/main/author/1
+```
+
+```json
+{ "id": 1, "full_name": "Ahmet Yılmaz", "email": "ahmet@example.com", "bio": "Tarih yazarı" }
+```
+
 ## Architecture
 
 Schemantic separates database-specific logic from rendering through two abstractions:
@@ -91,7 +168,8 @@ schemantic/
 │   ├── Schemantic.Providers.Oracle/
 │   ├── Schemantic.Providers.Sqlite/
 │   ├── Schemantic.Renderers/         Output renderers
-│   └── Schemantic.Cli/               Console entry point
+│   ├── Schemantic.Cli/               Console entry point
+│   └── Schemantic.Api/               REST API + Swagger UI (preview)
 ├── tests/
 │   └── Schemantic.Tests/             Unit tests
 ├── samples/                          Sample SQL and databases
@@ -108,6 +186,7 @@ schemantic/
 | `src/Schemantic.Providers.Sqlite` | SQLite provider |
 | `src/Schemantic.Renderers` | Output renderers |
 | `src/Schemantic.Cli` | Console entry point |
+| `src/Schemantic.Api` | REST API + Swagger UI (preview) |
 | `tests/Schemantic.Tests` | Unit tests |
 
 ## Roadmap

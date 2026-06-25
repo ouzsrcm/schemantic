@@ -23,16 +23,28 @@ public static class ApiBootstrap
     /// <summary>Loaded runtime context shared by endpoints.</summary>
     public sealed class RuntimeContext
     {
+        /// <summary>Database provider used for introspection and connections.</summary>
         public required IDatabaseProvider Provider { get; init; }
+
+        /// <summary>SQL dialect for parameterized data queries.</summary>
         public required ISqlDialect Dialect { get; init; }
+
+        /// <summary>Filtered schema loaded at startup.</summary>
         public required DatabaseSchema Schema { get; init; }
+
+        /// <summary>Connection string for data queries.</summary>
         public required string ConnectionString { get; init; }
+
+        /// <summary>Resolved startup options.</summary>
         public required ApiStartupOptions Options { get; init; }
     }
 
     /// <summary>
     /// Resolves the provider, introspects the database, applies optional filtering, and returns runtime context.
     /// </summary>
+    /// <param name="options">Startup options (provider, connection, optional filter config).</param>
+    /// <param name="cancellationToken">Token used to cancel introspection.</param>
+    /// <returns>Runtime context shared by API endpoints.</returns>
     public static async Task<RuntimeContext> LoadAsync(
         ApiStartupOptions options,
         CancellationToken cancellationToken = default)

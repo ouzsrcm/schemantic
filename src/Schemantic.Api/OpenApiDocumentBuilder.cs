@@ -9,6 +9,8 @@ namespace Schemantic.Api;
 public static class OpenApiDocumentBuilder
 {
     /// <summary>Produces an OpenAPI 3.0 JSON document for the schema's REST surface.</summary>
+    /// <param name="schema">Introspected database schema used to generate paths and component schemas.</param>
+    /// <returns>OpenAPI 3.0 document as a <see cref="JsonObject"/>.</returns>
     public static JsonObject Build(DatabaseSchema schema)
     {
         var paths = new JsonObject();

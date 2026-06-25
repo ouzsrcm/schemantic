@@ -36,3 +36,6 @@ hedefli). `dotnet build` + `dotnet test` yeşil kalmalı.
 
 Milestone sırası (Notion: "Schemantic.Api — Görevler"):
 v0.6 REST(read-only) -> v0.7 İlişkiler -> v0.8 CRUD -> v0.9 GraphQL -> v1.0 Olgunluk.
+
+
+dotnet run --project src/Schemantic.Api -- --provider sqlite --connection "Data Source=C:/projects/schemantic/sample.db"
