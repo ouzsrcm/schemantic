@@ -1,6 +1,8 @@
 ﻿using System.CommandLine;
 using System.Diagnostics;
+using System.Text.Json;
 using Schemantic.Core.Abstractions;
+using Schemantic.Core.Filtering;
 using Schemantic.Interpreters;
 using Schemantic.Providers.Oracle;
 using Schemantic.Providers.Sqlite;
@@ -51,6 +53,11 @@ var schemaOption = new Option<string?>("--schema")
     Description = "Oracle schema owner to read (optional; defaults to the connected user).",
 };
 
+var configOption = new Option<string?>("--config")
+{
+    Description = "Path to a JSON config file with include/exclude schema and table filters.",
+};
+
 var interpretOption = new Option<bool>("--interpret")
 {
     Description = "Add AI-generated table summaries via a local/remote LLM (opt-in).",
@@ -84,6 +91,7 @@ rootCommand.Options.Add(connectionOption);
 rootCommand.Options.Add(formatOption);
 rootCommand.Options.Add(outputOption);
 rootCommand.Options.Add(schemaOption);
+rootCommand.Options.Add(configOption);
 rootCommand.Options.Add(interpretOption);
 rootCommand.Options.Add(llmProviderOption);
 rootCommand.Options.Add(llmEndpointOption);
@@ -97,6 +105,7 @@ rootCommand.SetAction(async (parseResult, cancellationToken) =>
     var formatName = parseResult.GetValue(formatOption)!;
     var outputPath = parseResult.GetValue(outputOption) ?? GetDefaultOutputPath(formatName);
     var schemaOwner = parseResult.GetValue(schemaOption);
+    var configPath = parseResult.GetValue(configOption);
     var interpret = parseResult.GetValue(interpretOption);
 
     var stopwatch = Stopwatch.StartNew();
@@ -120,6 +129,14 @@ rootCommand.SetAction(async (parseResult, cancellationToken) =>
         }
 
         var schema = await provider.ReadSchemaAsync(connectionString, cancellationToken).ConfigureAwait(false);
+
+        if (!string.IsNullOrWhiteSpace(configPath))
+        {
+            var configJson = await File.ReadAllTextAsync(configPath, cancellationToken).ConfigureAwait(false);
+            var filterOptions = JsonSerializer.Deserialize<SchemaFilterOptions>(configJson, ConfigJsonOptions)
+                ?? new SchemaFilterOptions();
+            SchemaFilter.Apply(schema, filterOptions);
+        }
 
         if (interpret)
         {
@@ -165,3 +182,14 @@ static string GetDefaultOutputPath(string formatName) => formatName.ToLowerInvar
     "html" => "schema.html",
     _ => "schema.md",
 };
+
+partial class Program
+{
+    /// <summary>JSON options for reading the config file: case-insensitive, comments allowed.</summary>
+    private static readonly JsonSerializerOptions ConfigJsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        ReadCommentHandling = JsonCommentHandling.Skip,
+        AllowTrailingCommas = true,
+    };
+}

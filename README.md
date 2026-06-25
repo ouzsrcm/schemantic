@@ -13,6 +13,7 @@ A multi-database schema documentation tool, with planned support for local LLM-a
 - Markdown, JSON, and HTML output (tables, columns, foreign keys, indexes)
 - HTML output with a Mermaid ER diagram, search, and navigation
 - Optional LLM table summaries (Ollama / OpenAI-compatible) — skeleton
+- Config file with include/exclude schema and table filters (wildcards)
 
 **Planned**
 

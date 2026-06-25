@@ -29,10 +29,11 @@ Akış (`Program.cs` içindeki `SetAction`):
 1. `--provider` adına göre sözlükten bir `IDatabaseProvider` örneği üretilir.
 2. `--format` adına göre sözlükten bir `IRenderer` seçilir.
 3. `provider.ReadSchemaAsync(connectionString, ct)` → `DatabaseSchema` döner.
-4. `--interpret` verildiyse, `IInterpreter.InterpretAsync(schema, ct)` modeli AI özetleriyle zenginleştirir (opsiyonel).
-5. `renderer.Render(schema)` → `string` döner.
-6. İçerik `--output` yoluna (`File.WriteAllTextAsync`) yazılır.
-7. Konsola tablo sayısı, çıktı yolu ve geçen süre yazılır.
+4. `--config` verildiyse, `SchemaFilter.Apply(schema, options)` include/exclude kurallarıyla tablo/görünümleri budar (opsiyonel).
+5. `--interpret` verildiyse, `IInterpreter.InterpretAsync(schema, ct)` modeli AI özetleriyle zenginleştirir (opsiyonel).
+6. `renderer.Render(schema)` → `string` döner.
+7. İçerik `--output` yoluna (`File.WriteAllTextAsync`) yazılır.
+8. Konsola tablo sayısı, çıktı yolu ve geçen süre yazılır.
 
 Hata olursa mesaj `stderr`'e yazılır ve çıkış kodu `1` olur; başarıda `0`.
 

@@ -11,7 +11,7 @@ dokümantasyon üreten bir **.NET 8 CLI aracıdır**. Opsiyonel olarak local/uza
 LLM ile şemayı yorumlayıp tablo özetleri ekleyebilir.
 
 - **Mevcut:** SQL Server, Oracle, SQLite provider'ları; Markdown, JSON ve HTML (Mermaid ER diyagramlı) çıktı; opsiyonel LLM tablo yorumlama (Ollama / OpenAI-uyumlu) — iskelet.
-- **Planlanan:** Microsoft Access provider'ı; kolon/görünüm seviyesinde LLM yorumu; config dosyası ve çıktı temaları.
+- **Planlanan:** Microsoft Access provider'ı; kolon/görünüm seviyesinde LLM yorumu; çıktı temaları; NuGet yayını.
 
 NuGet aracı olarak paketlenir (`PackAsTool`), komut adı: **`schemantic`**.
 
@@ -82,6 +82,7 @@ dotnet tool install -g --add-source ./src/Schemantic.Cli/bin/Release Schemantic
 | `--format`     | Hayır   | `markdown`                  | `markdown` \| `json` \| `html` |
 | `--output`     | Hayır   | formata göre (`schema.md`/`.json`/`.html`) | Çıktı dosyası yolu |
 | `--schema`     | Hayır   | bağlı kullanıcı             | Sadece Oracle: okunacak şema sahibi |
+| `--config`     | Hayır   | —                           | include/exclude şema-tablo filtresi (JSON) |
 | `--interpret`  | Hayır   | kapalı                      | LLM ile tablo özetleri ekler (opt-in) |
 | `--llm-provider` | Hayır | `ollama`                    | `ollama` \| `openai` (OpenAI-uyumlu) |
 | `--llm-endpoint` | Hayır | `http://localhost:11434`    | LLM endpoint base URL |

@@ -1,0 +1,10 @@
+{
+  "include": {
+    "schemas": ["dbo"],
+    "tables": []
+  },
+  "exclude": {
+    "schemas": ["audit_*"],
+    "tables": ["*_tmp", "dbo.Stg*"]
+  }
+}
