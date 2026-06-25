@@ -14,6 +14,7 @@ dizindeki [`CLAUDE.md`](../CLAUDE.md)'dir.
 | [`testing.md`](testing.md)            | Test yapısı, çalıştırma, yeni test yazma. |
 | [`contributing.md`](contributing.md)  | Geliştirme ortamı, kod kuralları, yol haritası. |
 | [`releasing.md`](releasing.md)        | NuGet yayın süreci, sürümleme, kontrol listesi. |
+| [`api.md`](api.md)                    | **Tasarımda:** Schemantic.Api — şemadan REST/GraphQL + Swagger mimari rehberi. |
 
 > Not: Bu klasör Claude/AI asistanları içindir ama insan geliştiriciler için de
 > okunabilir tutulmuştur. Kök `README.md` son kullanıcıya, bu klasör katkı

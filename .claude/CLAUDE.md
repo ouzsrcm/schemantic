@@ -11,7 +11,8 @@ dokümantasyon üreten bir **.NET 8 CLI aracıdır**. Opsiyonel olarak local/uza
 LLM ile şemayı yorumlayıp tablo özetleri ekleyebilir.
 
 - **Mevcut:** SQL Server, Oracle, SQLite provider'ları; Markdown, JSON ve HTML (Mermaid ER diyagramlı) çıktı; opsiyonel LLM tablo yorumlama (Ollama / OpenAI-uyumlu) — iskelet.
-- **Planlanan:** Microsoft Access provider'ı; kolon/görünüm seviyesinde LLM yorumu; çıktı temaları; NuGet yayını.
+- **Planlanan:** Microsoft Access provider'ı; kolon/görünüm seviyesinde LLM yorumu; çıktı temaları.
+- **Tasarımda (yeni alt-ürün):** `Schemantic.Api` — şemadan çalışma anında REST/GraphQL API + Swagger UI (bkz. [`docs/api.md`](docs/api.md)). Mevcut `DatabaseSchema` + provider'ları yeniden kullanır.
 
 NuGet aracı olarak paketlenir (`PackAsTool`), komut adı: **`schemantic`**.
 
@@ -103,6 +104,7 @@ eklendiğinde buraya da kaydedilmelidir.
 - [`docs/testing.md`](docs/testing.md) — Test yapısı ve yeni test yazma.
 - [`docs/contributing.md`](docs/contributing.md) — Katkı akışı ve kurallar.
 - [`docs/releasing.md`](docs/releasing.md) — NuGet yayın süreci ve sürümleme.
+- [`docs/api.md`](docs/api.md) — **Tasarımda:** Schemantic.Api (şemadan REST/GraphQL + Swagger) mimari rehberi.
 
 ## Hızlı kurallar özeti (yaparken kontrol et)
 
