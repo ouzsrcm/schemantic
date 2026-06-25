@@ -121,6 +121,11 @@ public sealed class HtmlRenderer : IRenderer
             sb.AppendLine($"<p class=\"desc\">{HtmlEscape(table.Description.Trim())}</p>");
         }
 
+        if (!string.IsNullOrWhiteSpace(table.Interpretation))
+        {
+            sb.AppendLine($"<p class=\"ai\"><strong>AI summary:</strong> {HtmlEscape(table.Interpretation.Trim())}</p>");
+        }
+
         sb.AppendLine("<table>");
         sb.AppendLine("<thead><tr><th>Column</th><th>Type</th><th>Nullable</th><th>PK</th><th>Default</th><th>Description</th></tr></thead>");
         sb.AppendLine("<tbody>");
@@ -286,6 +291,7 @@ public sealed class HtmlRenderer : IRenderer
         sb.AppendLine("th,td{border:1px solid var(--border);padding:6px 10px;text-align:left;vertical-align:top;}");
         sb.AppendLine("th{background:var(--code);font-weight:600;}");
         sb.AppendLine(".desc{color:var(--muted);}");
+        sb.AppendLine(".ai{background:#eff6ff;border-left:3px solid var(--accent);padding:8px 12px;border-radius:0 6px 6px 0;}");
         sb.AppendLine(".tag{font-size:11px;background:var(--accent);color:#fff;border-radius:4px;padding:1px 6px;vertical-align:middle;}");
         sb.AppendLine("ul.fk,ul.idx{margin:4px 0 0;padding-left:20px;}");
         sb.AppendLine("pre{background:var(--code);padding:12px;border-radius:6px;overflow:auto;}");

@@ -6,6 +6,7 @@
     <ProjectReference Include="..\Schemantic.Renderers\Schemantic.Renderers.csproj" />
     <ProjectReference Include="..\Schemantic.Providers.Oracle\Schemantic.Providers.Oracle.csproj" />
     <ProjectReference Include="..\Schemantic.Providers.Sqlite\Schemantic.Providers.Sqlite.csproj" />
+    <ProjectReference Include="..\Schemantic.Interpreters\Schemantic.Interpreters.csproj" />
   </ItemGroup>
 
   <ItemGroup>

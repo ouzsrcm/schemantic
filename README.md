@@ -12,11 +12,12 @@ A multi-database schema documentation tool, with planned support for local LLM-a
 - SQL Server metadata extraction
 - Markdown, JSON, and HTML output (tables, columns, foreign keys, indexes)
 - HTML output with a Mermaid ER diagram, search, and navigation
+- Optional LLM table summaries (Ollama / OpenAI-compatible) — skeleton
 
 **Planned**
 
 - Microsoft Access provider
-- Optional local LLM commentary on schema structure
+- Column- and view-level LLM commentary; configuration file
 
 ## Quick start
 

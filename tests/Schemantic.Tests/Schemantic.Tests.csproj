@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Schemantic.Core\Schemantic.Core.csproj" />
     <ProjectReference Include="..\..\src\Schemantic.Renderers\Schemantic.Renderers.csproj" />
+    <ProjectReference Include="..\..\src\Schemantic.Interpreters\Schemantic.Interpreters.csproj" />
   </ItemGroup>
 
 </Project>

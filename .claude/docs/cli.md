@@ -32,6 +32,11 @@ schemantic --provider sqlserver \
 | `--format`     | Hayır   | `markdown`                  | `markdown` \| `json` \| `html`. |
 | `--output`     | Hayır   | formata göre (`schema.md`/`schema.json`/`schema.html`) | Çıktı dosyası yolu. Verilmezse formata göre seçilir. |
 | `--schema`     | Hayır   | bağlı kullanıcı             | Yalnızca Oracle: okunacak şema sahibi (owner). |
+| `--interpret`  | Hayır   | kapalı                      | LLM ile tablo özetleri ekler (opt-in). |
+| `--llm-provider` | Hayır | `ollama`                    | `ollama` \| `openai` (OpenAI-uyumlu). |
+| `--llm-endpoint` | Hayır | `http://localhost:11434`    | LLM endpoint base URL. |
+| `--llm-model`  | Hayır   | `qwen2.5-coder`             | Model adı. |
+| `--llm-api-key`| Hayır   | —                           | OpenAI-uyumlu uçlar için API anahtarı (Ollama yok sayar). |
 
 Bilinmeyen bir `--provider` veya `--format` verilirse, mevcut seçenekleri
 listeleyen bir hata `stderr`'e yazılır ve çıkış kodu `1` olur.

@@ -10,6 +10,7 @@ dizindeki [`CLAUDE.md`](../CLAUDE.md)'dir.
 | [`providers.md`](providers.md)        | Mevcut provider'lar ve **yeni provider ekleme rehberi**. |
 | [`model.md`](model.md)                | `DatabaseSchema` ve ilişkili tiplerin alan-alan referansı. |
 | [`cli.md`](cli.md)                    | CLI seçenekleri, çıkış davranışı, çıktı formatları. |
+| [`interpreters.md`](interpreters.md)  | Opsiyonel LLM yorumlama katmanı (Ollama / OpenAI-uyumlu). |
 | [`testing.md`](testing.md)            | Test yapısı, çalıştırma, yeni test yazma. |
 | [`contributing.md`](contributing.md)  | Geliştirme ortamı, kod kuralları, yol haritası. |
 

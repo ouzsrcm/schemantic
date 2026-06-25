@@ -29,9 +29,10 @@ Akış (`Program.cs` içindeki `SetAction`):
 1. `--provider` adına göre sözlükten bir `IDatabaseProvider` örneği üretilir.
 2. `--format` adına göre sözlükten bir `IRenderer` seçilir.
 3. `provider.ReadSchemaAsync(connectionString, ct)` → `DatabaseSchema` döner.
-4. `renderer.Render(schema)` → `string` döner.
-5. İçerik `--output` yoluna (`File.WriteAllTextAsync`) yazılır.
-6. Konsola tablo sayısı, çıktı yolu ve geçen süre yazılır.
+4. `--interpret` verildiyse, `IInterpreter.InterpretAsync(schema, ct)` modeli AI özetleriyle zenginleştirir (opsiyonel).
+5. `renderer.Render(schema)` → `string` döner.
+6. İçerik `--output` yoluna (`File.WriteAllTextAsync`) yazılır.
+7. Konsola tablo sayısı, çıktı yolu ve geçen süre yazılır.
 
 Hata olursa mesaj `stderr`'e yazılır ve çıkış kodu `1` olur; başarıda `0`.
 
@@ -64,17 +65,34 @@ public interface IRenderer
 `DatabaseSchema`'yı bir hedef formata (Markdown, JSON) çeviren saf fonksiyon.
 Renderer'lar veritabanını veya provider'ı tanımaz; sadece modelle çalışır.
 
+### `IInterpreter` (`Schemantic.Core/Abstractions`)
+
+```csharp
+public interface IInterpreter
+{
+    string Name { get; }
+    Task<DatabaseSchema> InterpretAsync(DatabaseSchema schema, CancellationToken ct = default);
+}
+```
+
+**Opsiyonel** pipeline aşaması. Modeldeki `Interpretation` alanlarını AI üretimi
+özetlerle doldurur, metadata'ya (provider'ın okuduğu `Description`) dokunmaz.
+`Schemantic.Interpreters` projesindeki `LlmInterpreter` bunu, arka uçtan bağımsız
+bir `IChatClient` (Ollama / OpenAI-uyumlu) üzerinden yapar. Bkz. [`interpreters.md`](interpreters.md).
+
 ## Bağımlılık kuralı
 
 ```
 Cli ──▶ Providers.*      ──▶ Core
-   └──▶ Renderers        ──▶ Core
+   ├──▶ Renderers        ──▶ Core
+   └──▶ Interpreters     ──▶ Core
 ```
 
 - `Core` hiçbir projeye bağlı değildir, hiçbir DB sürücüsü içermez.
 - `Providers.*` yalnızca `Core`'a ve kendi DB sürücüsüne bağlıdır.
 - Provider'lar **birbirini tanımaz**; biri değişince diğeri etkilenmez.
-- `Renderers` yalnızca `Core`'a bağlıdır.
+- `Renderers` ve `Interpreters` yalnızca `Core`'a bağlıdır. `Interpreters` ağ için
+  `HttpClient` kullanır; LLM yoksa katman hiç çalışmaz.
 - `Cli` hepsini birleştirir (composition root). Provider/renderer kaydı yalnızca
   burada, iki `Dictionary` içinde yapılır.
 

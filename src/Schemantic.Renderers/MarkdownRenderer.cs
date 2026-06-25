@@ -92,6 +92,12 @@ public sealed class MarkdownRenderer : IRenderer
             sb.AppendLine();
         }
 
+        if (!string.IsNullOrWhiteSpace(table.Interpretation))
+        {
+            sb.AppendLine($"> **AI summary:** {table.Interpretation.Trim()}");
+            sb.AppendLine();
+        }
+
         sb.AppendLine("| Column | Type | Nullable | PK | Default | Description |");
         sb.AppendLine("| --- | --- | --- | --- | --- | --- |");
 

@@ -1,6 +1,7 @@
 ﻿using System.CommandLine;
 using System.Diagnostics;
 using Schemantic.Core.Abstractions;
+using Schemantic.Interpreters;
 using Schemantic.Providers.Oracle;
 using Schemantic.Providers.Sqlite;
 using Schemantic.Providers.SqlServer;
@@ -50,11 +51,44 @@ var schemaOption = new Option<string?>("--schema")
     Description = "Oracle schema owner to read (optional; defaults to the connected user).",
 };
 
+var interpretOption = new Option<bool>("--interpret")
+{
+    Description = "Add AI-generated table summaries via a local/remote LLM (opt-in).",
+};
+
+var llmProviderOption = new Option<string>("--llm-provider")
+{
+    Description = "LLM backend when --interpret is set: ollama | openai.",
+    DefaultValueFactory = _ => "ollama",
+};
+
+var llmEndpointOption = new Option<string>("--llm-endpoint")
+{
+    Description = "LLM endpoint base URL.",
+    DefaultValueFactory = _ => "http://localhost:11434",
+};
+
+var llmModelOption = new Option<string>("--llm-model")
+{
+    Description = "LLM model name.",
+    DefaultValueFactory = _ => "qwen2.5-coder",
+};
+
+var llmApiKeyOption = new Option<string?>("--llm-api-key")
+{
+    Description = "API key for OpenAI-compatible endpoints (ignored by Ollama).",
+};
+
 rootCommand.Options.Add(providerOption);
 rootCommand.Options.Add(connectionOption);
 rootCommand.Options.Add(formatOption);
 rootCommand.Options.Add(outputOption);
 rootCommand.Options.Add(schemaOption);
+rootCommand.Options.Add(interpretOption);
+rootCommand.Options.Add(llmProviderOption);
+rootCommand.Options.Add(llmEndpointOption);
+rootCommand.Options.Add(llmModelOption);
+rootCommand.Options.Add(llmApiKeyOption);
 
 rootCommand.SetAction(async (parseResult, cancellationToken) =>
 {
@@ -63,6 +97,7 @@ rootCommand.SetAction(async (parseResult, cancellationToken) =>
     var formatName = parseResult.GetValue(formatOption)!;
     var outputPath = parseResult.GetValue(outputOption) ?? GetDefaultOutputPath(formatName);
     var schemaOwner = parseResult.GetValue(schemaOption);
+    var interpret = parseResult.GetValue(interpretOption);
 
     var stopwatch = Stopwatch.StartNew();
 
@@ -85,6 +120,23 @@ rootCommand.SetAction(async (parseResult, cancellationToken) =>
         }
 
         var schema = await provider.ReadSchemaAsync(connectionString, cancellationToken).ConfigureAwait(false);
+
+        if (interpret)
+        {
+            var llmOptions = new LlmOptions
+            {
+                Provider = parseResult.GetValue(llmProviderOption)!,
+                Endpoint = parseResult.GetValue(llmEndpointOption)!,
+                Model = parseResult.GetValue(llmModelOption)!,
+                ApiKey = parseResult.GetValue(llmApiKeyOption),
+            };
+
+            using var httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(5) };
+            var interpreter = InterpreterFactory.Create(llmOptions, httpClient);
+            Console.WriteLine($"Interpreting schema with {interpreter.Name}...");
+            await interpreter.InterpretAsync(schema, cancellationToken).ConfigureAwait(false);
+        }
+
         var content = renderer.Render(schema);
 
         var fullOutputPath = Path.GetFullPath(outputPath);

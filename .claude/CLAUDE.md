@@ -7,11 +7,11 @@
 ## Proje nedir?
 
 **Schemantic**, herhangi bir veritabanına bağlanıp şemasını tarayan ve
-dokümantasyon üreten bir **.NET 8 CLI aracıdır**. İleride opsiyonel olarak
-local LLM ile şema yorumlama hedeflenir.
+dokümantasyon üreten bir **.NET 8 CLI aracıdır**. Opsiyonel olarak local/uzak
+LLM ile şemayı yorumlayıp tablo özetleri ekleyebilir.
 
-- **Mevcut:** SQL Server, Oracle, SQLite provider'ları; Markdown, JSON ve HTML (Mermaid ER diyagramlı) çıktı.
-- **Planlanan:** Microsoft Access provider'ı, local LLM yorumları.
+- **Mevcut:** SQL Server, Oracle, SQLite provider'ları; Markdown, JSON ve HTML (Mermaid ER diyagramlı) çıktı; opsiyonel LLM tablo yorumlama (Ollama / OpenAI-uyumlu) — iskelet.
+- **Planlanan:** Microsoft Access provider'ı; kolon/görünüm seviyesinde LLM yorumu; config dosyası ve çıktı temaları.
 
 NuGet aracı olarak paketlenir (`PackAsTool`), komut adı: **`schemantic`**.
 
@@ -27,7 +27,7 @@ NuGet aracı olarak paketlenir (`PackAsTool`), komut adı: **`schemantic`**.
 4. **Bağımlılıkları minimumda tut.** Gereksiz abstraction/factory ekleme.
 5. **Her public tip için kısa XML doc comment yaz.**
 6. **Kod İngilizce** (identifier, comment). Açıklamalar Türkçe olabilir.
-7. **Henüz olmayan şeyleri (Access, LLM, HTML, config) üretme.** Sadece istenen adımı yap.
+7. **Henüz olmayan şeyleri (Access, config dosyası, kolon-seviyesi LLM) üretme.** Sadece istenen adımı yap.
 
 ## Solution yapısı
 
@@ -39,6 +39,7 @@ schemantic/
 │   ├── Schemantic.Providers.Oracle/     # Oracle provider'ı
 │   ├── Schemantic.Providers.Sqlite/     # SQLite provider'ı
 │   ├── Schemantic.Renderers/            # Markdown + JSON + HTML renderer'ları
+│   ├── Schemantic.Interpreters/         # Opsiyonel LLM yorumlama (IChatClient: Ollama/OpenAI)
 │   └── Schemantic.Cli/                  # Konsol uygulaması (giriş noktası)
 ├── tests/
 │   └── Schemantic.Tests/                # xUnit testleri
@@ -48,7 +49,7 @@ schemantic/
 └── global.json                          # SDK pin (8.0.0, rollForward latestFeature)
 ```
 
-Bağımlılık yönü tek yönlüdür: `Cli → (Providers + Renderers) → Core`.
+Bağımlılık yönü tek yönlüdür: `Cli → (Providers + Renderers + Interpreters) → Core`.
 `Core` hiçbir şeye bağlı değildir. Provider'lar birbirini tanımaz.
 
 ## Sık kullanılan komutlar
@@ -81,6 +82,11 @@ dotnet tool install -g --add-source ./src/Schemantic.Cli/bin/Release Schemantic
 | `--format`     | Hayır   | `markdown`                  | `markdown` \| `json` \| `html` |
 | `--output`     | Hayır   | formata göre (`schema.md`/`.json`/`.html`) | Çıktı dosyası yolu |
 | `--schema`     | Hayır   | bağlı kullanıcı             | Sadece Oracle: okunacak şema sahibi |
+| `--interpret`  | Hayır   | kapalı                      | LLM ile tablo özetleri ekler (opt-in) |
+| `--llm-provider` | Hayır | `ollama`                    | `ollama` \| `openai` (OpenAI-uyumlu) |
+| `--llm-endpoint` | Hayır | `http://localhost:11434`    | LLM endpoint base URL |
+| `--llm-model`  | Hayır   | `qwen2.5-coder`             | Model adı |
+| `--llm-api-key`| Hayır   | —                           | OpenAI-uyumlu uçlar için API anahtarı |
 
 Provider ve renderer kayıtları `src/Schemantic.Cli/Program.cs` içindeki iki
 `Dictionary`'de tutulur (büyük/küçük harf duyarsız). Yeni bir provider/renderer
@@ -92,6 +98,7 @@ eklendiğinde buraya da kaydedilmelidir.
 - [`docs/providers.md`](docs/providers.md) — Provider'lar ve **yeni provider ekleme rehberi**.
 - [`docs/model.md`](docs/model.md) — `DatabaseSchema` ve ilişkili tiplerin referansı.
 - [`docs/cli.md`](docs/cli.md) — CLI kullanımı ve çıktı formatları.
+- [`docs/interpreters.md`](docs/interpreters.md) — Opsiyonel LLM yorumlama katmanı.
 - [`docs/testing.md`](docs/testing.md) — Test yapısı ve yeni test yazma.
 - [`docs/contributing.md`](docs/contributing.md) — Katkı akışı ve kurallar.
 

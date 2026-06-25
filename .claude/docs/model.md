@@ -24,6 +24,7 @@ Tek bir tablonun metadata'sı.
 | `Schema`      | `string`                  | Şema adı (ör. `dbo`). |
 | `Name`        | `string`                  | Şema ön eki olmadan tablo adı. |
 | `Description` | `string?`                 | Metadata'dan okunabilen açıklama. |
+| `Interpretation` | `string?`              | Opsiyonel AI üretimi tablo özeti (yalnız `--interpret` ile dolar). |
 | `Columns`     | `IList<ColumnInfo>`       | Kolonlar. |
 | `ForeignKeys` | `IList<ForeignKeyInfo>`   | Dışa giden foreign key'ler. |
 | `Indexes`     | `IList<IndexInfo>`        | Index'ler. |
@@ -39,6 +40,7 @@ Tek bir tablonun metadata'sı.
 | `MaxLength`    | `int?`    | Değişken uzunluklu tipler için maksimum uzunluk. |
 | `DefaultValue` | `string?` | Tanımlıysa default ifade/literal. |
 | `Description`  | `string?` | Metadata'dan açıklama. |
+| `Interpretation` | `string?` | Opsiyonel AI üretimi kolon özeti (şu an iskelet doldurmaz). |
 
 ## `ForeignKeyInfo`
 
@@ -66,6 +68,7 @@ Tek bir tablonun metadata'sı.
 | `Name`        | `string`             | Görünüm adı. |
 | `Description` | `string?`            | Metadata'dan açıklama. |
 | `Definition`  | `string?`            | Mevcutsa görünümün SQL tanımı. |
+| `Interpretation` | `string?`         | Opsiyonel AI üretimi görünüm özeti. |
 | `Columns`     | `IList<ColumnInfo>`  | Görünümün kolonları. |
 
 ## Tasarım notları
